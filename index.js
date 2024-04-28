@@ -47,6 +47,14 @@ async function run() {
         res.send(result)
     })
 
+    app.get('/myList/:email', async(req, res)=>{
+        const email = req.params.email
+        const cursor = detailsCollection.find({email: email})
+        const result = await cursor.toArray()
+        res.send(result)
+
+    })
+
 
 
     // Send a ping to confirm a successful connection
