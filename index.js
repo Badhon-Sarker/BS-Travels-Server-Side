@@ -84,6 +84,8 @@ async function run() {
 
     app.get('/detailsData/:id', async(req, res)=>{
         const id = new ObjectId(req.params.id)
+        const result = await detailsCollection.findOne(id)
+        res.send(result)
         
         
     })
