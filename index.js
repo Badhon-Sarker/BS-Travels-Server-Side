@@ -2,7 +2,7 @@ const express = require("express")
 const cors = require("cors")
 const app = express()
 require('dotenv').config()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000
 
 
@@ -34,6 +34,8 @@ async function run() {
  
     const detailsCollection = client.db("allPlaces").collection('placeDetails')
 
+    const countryCollection = client.db("allPlaces").collection('country_Name')
+
     app.post('/addTouristsSpot', async(req, res)=>{
         const details = req.body
         const result = await detailsCollection.insertOne(details)
@@ -47,6 +49,12 @@ async function run() {
         res.send(result)
     })
 
+    app.get('/', async(req, res)=>{
+        const cursor = detailsCollection.find()
+        const result = await cursor.toArray()
+        res.send(result)
+    })
+
     app.get('/myList/:email', async(req, res)=>{
         const email = req.params.email
         const cursor = detailsCollection.find({email: email})
@@ -54,6 +62,48 @@ async function run() {
         res.send(result)
 
     })
+
+
+    app.get('/country', async(req, res)=>{
+        const cursor = countryCollection.find()
+        const result = await cursor.toArray()
+        res.send(result)
+    })
+
+
+    app.get('/updateSingle/:id', async(req, res)=>{
+        const id = new ObjectId(req.params.id)
+        const result = await detailsCollection.findOne(id)
+        res.send(result)
+        
+
+    })
+
+    app.put('/updatePage/:id', async(req, res)=>{
+
+        const query = {_id: new ObjectId(req.params.id)}
+
+        const data = {
+            $set: {
+                image : req.body.image,
+                tourists_spot_name : req.body.tourists_spot_name,
+                country_Name :req.body.country_Name,
+                location: req.body.location,
+                description :req.body.description,
+                average_cost : req.body.average_cost,
+                seasonality: req.body.seasonality,
+                travel_time : req.body.travel_time,
+                totaVisitorsPerYear : req.body.totaVisitorsPerYear
+
+            },
+          };
+
+        const result = await detailsCollection.updateOne(query, data);
+        console.log(result)
+        res.send(result)
+    })
+
+   
 
 
 
@@ -71,9 +121,9 @@ run().catch(console.dir);
 
 
 
-app.get('/', (req, res)=>{
-    res.send("Travel agency server is running")
-})
+// app.get('/', (req, res)=>{
+//     res.send("Travel agency server is running")
+// })
 
 app.listen(port, (req, res)=>{
     console.log("Server is running on port: ", port)
