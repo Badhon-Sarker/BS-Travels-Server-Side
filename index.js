@@ -49,7 +49,7 @@ async function run() {
         res.send(result)
     })
 
-    app.get('/', async(req, res)=>{
+    app.get('/allUser', async(req, res)=>{
         const cursor = detailsCollection.find()
         const result = await cursor.toArray()
         res.send(result)
@@ -85,10 +85,11 @@ async function run() {
     app.get('/detailsData/:id', async(req, res)=>{
         const id = new ObjectId(req.params.id)
         const result = await detailsCollection.findOne(id)
-        res.send(result)
-        
-        
+        res.send(result)  
     })
+
+
+   
 
     app.put('/updatePage/:id', async(req, res)=>{
 
@@ -139,9 +140,9 @@ run().catch(console.dir);
 
 
 
-// app.get('/', (req, res)=>{
-//     res.send("Travel agency server is running")
-// })
+app.get('/', (req, res)=>{
+    res.send("Travel agency server is running")
+})
 
 app.listen(port, (req, res)=>{
     console.log("Server is running on port: ", port)
