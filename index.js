@@ -71,12 +71,21 @@ async function run() {
     })
 
 
+
+
     app.get('/updateSingle/:id', async(req, res)=>{
         const id = new ObjectId(req.params.id)
         const result = await detailsCollection.findOne(id)
         res.send(result)
         
+    })
 
+
+
+    app.get('/detailsData/:id', async(req, res)=>{
+        const id = new ObjectId(req.params.id)
+        
+        
     })
 
     app.put('/updatePage/:id', async(req, res)=>{
